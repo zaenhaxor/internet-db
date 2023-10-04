@@ -81,7 +81,7 @@ if ($opsi === 'a') {
         $ip_file = file($file_input, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if (!empty($ip_file)) {
             $path = getcwd(); 
-            $output_saved = "{$path}/logs_{$file_input}.txt"; 
+            $output_saved = "{$path}/logs_{$file_input}"; 
             $file = fopen($output_saved, "w");
             if ($file) {
                 foreach ($ip_file as $ips) {
