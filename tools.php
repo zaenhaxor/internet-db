@@ -20,7 +20,6 @@ echo "a. {$cyan}Single IP{$reset}\n";
 echo "b. {$cyan}Mass IP{$reset}\n\n";
 echo "choose (a or b)?: ";
 $opsi = trim(fgets(STDIN));
-
 function ambil_data($url)
 {
     $ch = curl_init($url);
@@ -33,7 +32,6 @@ function ambil_data($url)
 if ($opsi === 'a') {
     echo "IP address: ";
     $ip = trim(fgets(STDIN));
-
     if (empty($ip)) {
         echo "{$merah}Empty input !{$reset}\n";
         /* referensi:
@@ -42,8 +40,7 @@ if ($opsi === 'a') {
     } elseif (filter_var($ip, FILTER_VALIDATE_IP)) {
         $url = "https://internetdb.shodan.io/{$ip}";
         $data = ambil_data($url); // respon berupa data json
-        $data = json_decode($data, true);
-        
+        $data = json_decode($data, true); 
         $cpes = $data['cpes']; 
         $hostnames = implode(', ', $data['hostnames']);
         $ip_address = $data['ip'];
@@ -51,8 +48,7 @@ if ($opsi === 'a') {
         $vulns = implode(',', $data['vulns']);
         $remove_cpe = implode(', ', array_map(function ($cpe) {
             return str_replace('cpe:/a:', '', $cpe);
-        }, $cpes));
-        
+        }, $cpes));  
         $path = getcwd(); //https://www.php.net/manual/en/function.getcwd.php
         $output_saved = "{$path}/{$ip_address}_logs.txt";
         echo "[{$cyan}+{$reset}] {$hijau}{$ip_address}{$reset}\n";
@@ -61,7 +57,6 @@ if ($opsi === 'a') {
         echo "IP       : {$cyan}{$ip_address}{$reset}\n";
         echo "Ports    : {$kuning}{$ports}{$reset}\n";
         echo "Vulns    : {$merah}{$vulns}{$reset}\n"; // output berupa kode cve, CVE: Common Vulnerabilities and Exposures
-
         $file = fopen($output_saved, "w");
         if ($file) {
             fwrite($file, "[+] Hasil untuk {$ip_address}\n");
@@ -82,13 +77,11 @@ if ($opsi === 'a') {
     // mass IP
     echo "File: ";
     $file_input = trim(fgets(STDIN));
-    
     if (file_exists($file_input)) {
         $ip_file = file($file_input, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if (!empty($ip_file)) {
             $path = getcwd(); 
             $output_saved = "{$path}/logs_{$file_input}.txt"; 
-
             $file = fopen($output_saved, "w");
             if ($file) {
                 foreach ($ip_file as $ips) {
@@ -104,14 +97,12 @@ if ($opsi === 'a') {
                         $remove_cpe = implode(', ', array_map(function ($cpe) {
                             return str_replace('cpe:/a:', '', $cpe);
                         }, $cpes));
-
                         echo "[{$cyan}+{$reset}] {$hijau}{$ip_address}{$reset}\n";
                         echo "CPE      : {$ungu}{$remove_cpe}{$reset}\n";
                         echo "Hostname : {$hijau}{$hostnames}{$reset}\n";
                         echo "IP       : {$cyan}{$ip_address}{$reset}\n";
                         echo "Ports    : {$kuning}{$ports}{$reset}\n";
                         echo "Vulns    : {$merah}{$vulns}{$reset}\n\n";
-
                         fwrite($file, "[+] Hasil untuk {$ip_address}\n");
                         fwrite($file, "CPE      : {$remove_cpe}\n");
                         fwrite($file, "Hostname : {$hostnames}\n");
